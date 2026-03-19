@@ -1,0 +1,21 @@
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+ENV/
+
+# Data directory: ignore all except examples
+data/*
+!data/*.example.md
+!data/*.example.json
+!data/README.md
+
+# Output directory: ignore everything
+output/**
+
+# OS-specific
+.DS_Store
+Thumbs.db
