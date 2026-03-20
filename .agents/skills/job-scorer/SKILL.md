@@ -5,7 +5,9 @@ description: Rubric and instructions for scoring job relevance using Gemini AI (
 
 # Job Scorer Skill
 
-This skill defines how job postings are evaluated against the user's profile (MD + AI + Remote). Scoring is done automatically by Gemini AI during discovery using the rubric defined in `scripts/score.py`.
+This skill defines how job postings are evaluated against the user's profile. Scoring is done automatically by Gemini AI during discovery using the rubric defined in `scripts/score.py`.
+
+**Always read `data/user_profile.md` before manually interpreting scores or adjusting the rubric.** The scoring thresholds and dealbreakers in `scripts/score.py` are calibrated against the profile — understanding the user's goals is essential before changing anything.
 
 ## Scale
 

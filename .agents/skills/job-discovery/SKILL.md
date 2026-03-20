@@ -7,23 +7,11 @@ description: Instructions and guidelines for discovering AI+Healthcare remote jo
 
 This skill defines the strategy for finding highly relevant job postings for a Medical Doctor transitioning into remote AI/Tech leadership roles.
 
-## Target Profile
+## User Profile
 
-The user is a physician (MD) pivoting into non-clinical, fully remote roles at the intersection of **healthcare and AI**. The search targets leadership, senior IC, and product/program management positions where a medical background is a competitive advantage — not a clinical requirement.
+**Always read `data/user_profile.md` before modifying or interpreting search queries.** It contains the user's actual target roles, skills, salary floor, and what to avoid. The defaults in `config.py` are populated for the original author — once a user runs the Setup Wizard, their personalized queries live in `config_user.py` and override those defaults.
 
 ## Search Strategy
-
-### Target Titles / Roles
-- Clinical AI Lead / Director of Clinical AI
-- Medical Director of AI (non-clinical)
-- Head of Clinical / VP of Clinical Strategy
-- Clinical Transformation Lead
-- AI Program Manager (Healthcare)
-- Clinical Product Manager
-- Senior / Principal Clinical Advisor
-- Clinical AI Architect
-- Clinical Informatics Specialist
-- Health Informatics Lead
 
 ### Active Search Queries (defaults in `config.py` — overridden by `config_user.py` if present)
 

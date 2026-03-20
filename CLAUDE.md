@@ -1,6 +1,6 @@
 # Job Hunt — AI Assistant Context
 
-This is an automated, AI-powered job hunting system built for a **Medical Doctor transitioning into remote AI/Healthcare leadership roles**. You are the AI assistant helping to operate and extend this tool.
+This is an automated, AI-powered job hunting system that helps users discover, score, and track remote job opportunities. You are the AI assistant helping to operate and extend this tool.
 
 ---
 
@@ -16,9 +16,11 @@ The system automatically:
 
 ## User Profile
 
-The user is a physician (MD) with clinical and healthcare operations experience, pivoting into non-clinical, fully remote roles at the intersection of **healthcare and AI**. Their competitive differentiator is combining medical domain expertise with AI/automation skills.
+**Always read `data/user_profile.md` to understand who this user is before taking any action.**
 
-Full profile details are in `data/user_profile.md` (gitignored, local only).
+This file contains their background, target roles, key skills, salary requirements, and what to avoid. It is gitignored and unique to each installation — never assume you know the user's profile from memory or from the repository defaults.
+
+If `data/user_profile.md` does not exist, the user has not completed setup yet. Follow the **Setup Wizard** skill to onboard them first.
 
 ---
 
