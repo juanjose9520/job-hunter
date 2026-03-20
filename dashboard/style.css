@@ -320,3 +320,298 @@ h1 {
   color: var(--accent);
   font-weight: 600;
 }
+
+/* ── HEADER ── */
+.discovery-status {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+/* ── BOARD CONTROLS (score slider) ── */
+.board-controls {
+  padding: 0.6rem 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.score-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.score-filter input[type="range"] {
+  width: 140px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ── COLUMN HEADER ENHANCEMENTS ── */
+.col-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.col-head-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.col-sort {
+  font-size: 0.75rem;
+  background: #1e2330;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
+.col-sort:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.col-search {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.3rem 0.6rem;
+  background: #1e2330;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-family: inherit;
+}
+
+.col-search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.col-search::placeholder {
+  color: var(--text-muted);
+}
+
+/* ── CARD ENHANCEMENTS ── */
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.4rem;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.job-card:hover .card-actions {
+  opacity: 1;
+}
+
+.quick-shortlist {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.quick-shortlist:hover {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.batch-check {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.job-card.selected {
+  border-color: var(--accent);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+/* Stale card (3–7 days old, new status) */
+.job-card.stale {
+  border-color: #78350f;
+}
+
+.job-card.stale .job-title {
+  color: #fbbf24;
+}
+
+.card-footer {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.job-timestamp {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.job-notes-preview {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overdue-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 4px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* ── BATCH ACTION BAR ── */
+.batch-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 90;
+  font-size: 0.9rem;
+}
+
+#batch-count {
+  color: var(--text-muted);
+  min-width: 80px;
+}
+
+/* ── DIFF MODAL ── */
+.diff-modal-content {
+  max-width: 1200px;
+  width: 95%;
+  height: 88vh;
+  flex-direction: column;
+}
+
+.diff-panels {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+.diff-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.diff-panel:last-child {
+  border-right: none;
+}
+
+.diff-panel-title {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-col);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.diff-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.diff-line-added {
+  background: rgba(16, 185, 129, 0.15);
+  color: #a7f3d0;
+  display: block;
+  padding: 0 0.25rem;
+  border-left: 2px solid #10b981;
+}
+
+.diff-line-removed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  display: block;
+  padding: 0 0.25rem;
+  border-left: 2px solid #ef4444;
+  text-decoration: line-through;
+}
+
+.diff-line-same {
+  display: block;
+  padding: 0 0.25rem;
+  color: var(--text-muted);
+}
+
+/* ── FOLLOW-UP DATE IN MODAL ── */
+.follow-up-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.follow-up-row label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.follow-up-row input[type="date"] {
+  background: var(--bg-col);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.follow-up-row input[type="date"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.follow-up-overdue-label {
+  font-size: 0.8rem;
+  color: #ef4444;
+  font-weight: 600;
+}

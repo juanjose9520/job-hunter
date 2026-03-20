@@ -9,11 +9,11 @@ import time
 import warnings
 warnings.filterwarnings("ignore")
 from google import genai
-from google.genai import types
+
 from scripts.database import get_connection, update_job_status
 from config import (
     GEMINI_API_KEY, GEMINI_MODEL, USER_PROFILE,
-    SCORE_SHOW_THRESHOLD, PENALIZE_MISSING_SALARY
+    SCORE_SHOW_THRESHOLD
 )
 
 try:
@@ -45,16 +45,21 @@ Evaluate the job against the candidate's dealbreakers and strongest suits.
 - Not 100% remote (hybrid or on-site).
 - Stated salary is clearly under $2,500 USD/month or under $30 USD/hour.
 - Requires a specific US medical license, US citizenship, or US work permit/visa.
-- Deep software engineering role (heavy coding/programming) with NO healthcare or clinical operations aspect.
+- Deep software engineering role (heavy coding/programming) with NO healthcare or clinical AI aspect.
+- Sales, business development, or account management role (AE, SDR, BDR, Account Manager) with no clinical or AI leadership component.
+- Patient-facing clinical role requiring active medical practice (seeing patients, clinical shifts, prescribing).
 
 **High Match (Score 80-100):**
-- Aligns with the candidate's strongest suit: US corporate healthcare operations leveraging AI pipeline knowledge.
-- Involves leading/managing clinical teams or clinical AI workflows.
-- Matches salary expectations (>= $2,500/mo or >= $30/hr) and is 100% remote.
+- Leadership, management, or senior IC role at the intersection of healthcare and AI.
+- Titles like: Clinical AI Lead, Medical Director of AI, Head of Clinical AI, Director of Clinical Informatics, VP of Clinical Strategy, Clinical Product Manager, AI Program Manager (Healthcare), Clinical Transformation Lead, Senior Clinical AI Specialist, Principal Clinical Advisor, Clinical AI Architect.
+- Leverages the candidate's physician background as a domain expert — NOT as a practicing clinician.
+- Involves leading/managing teams or clinical AI workflows, prompt engineering, or AI product strategy.
+- Fully remote with no location restriction. Salary >= $2,500/mo or >= $30/hr.
 
 **Moderate Match (Score 50-79):**
-- No dealbreakers, but not perfectly aligned with the candidate's strongest clinical AI operations suit.
-- Might be a generic health tech role, general AI operations, or missing some clear indicators of US corporate healthcare operations, but still a viable 100% remote opportunity.
+- No dealbreakers, but not a perfect leadership/AI fit.
+- Could be a general health tech, AI operations, or product role that is viable but lacks clear clinical AI leadership signals.
+- Still 100% remote with no hard location restriction.
 
 Return ONLY a JSON object like this (no markdown, no extra text):
 {{
@@ -65,7 +70,9 @@ Return ONLY a JSON object like this (no markdown, no extra text):
     "remote_confirmed": true/false,
     "salary_adequate": true/false/null,
     "healthcare_ai_focus": true/false,
-    "heavy_coding_penalty": true/false
+    "heavy_coding_penalty": true/false,
+    "sales_role_penalty": true/false,
+    "patient_facing_penalty": true/false
   }},
   "top_keywords": ["<keyword1>", "<keyword2>", "<keyword3>"]
 }}

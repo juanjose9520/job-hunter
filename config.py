@@ -47,20 +47,42 @@ Career Goals:
 """
 
 # ─── Job Search Queries ───────────────────────────────────────────────────────
+# Targeting: physician transitioning to AI leadership/senior roles — fully remote.
+# Exclusions: -sales -"account executive" -"account manager" remove patient-facing roles.
 SEARCH_QUERIES = [
-    '"clinical AI" remote',
-    '"health AI" remote',
-    '"medical AI" remote -engineer -developer -software',
-    '"AI healthcare" "prompt engineering" remote',
+    # Leadership / Director roles
+    '"clinical AI lead" remote',
+    '"medical director" AI remote -"patient care"',
+    '"head of clinical" AI remote',
+    '"director of clinical" AI remote',
+    '"VP clinical" AI remote',
+    '"clinical transformation" AI remote',
+    '"director" "healthcare AI" remote',
+    '"head of medical affairs" AI remote',
+    '"director of medical AI" remote',
+
+    # Program / Product management
+    '"clinical product manager" AI remote',
+    '"AI program manager" healthcare remote',
+    '"healthcare AI" "product manager" remote',
+    '"AI" "clinical operations" manager remote',
+
+    # Senior IC roles
+    '"senior clinical AI" remote',
+    '"principal clinical" AI remote',
+    '"clinical AI architect" remote',
+    '"senior healthcare AI" remote',
+    '"senior medical affairs" AI remote',
+
+    # Physician-specific crossover
+    '"physician" AI remote "non-clinical" -sales',
+    '"MD" "healthcare AI" remote -sales',
+    '"medical doctor" AI remote -"patient care"',
+
+    # General clinical AI (kept from before)
     '"clinical informatics" AI remote',
-    '"clinical operations" AI remote',
-    '"physician" AI remote "non-clinical"',
-    '"MD" "healthcare AI" remote -clinical',
-    '"medical doctor" AI remote',
     '"health informatics" AI remote',
-    '"healthcare AI" "product" remote',
     '"AI" "clinical documentation" remote',
-    '"healthcare operations" AI remote',
 ]
 
 # ─── Scoring Thresholds ───────────────────────────────────────────────────────
@@ -70,6 +92,24 @@ SCORE_ARCHIVE_THRESHOLD = 49  # Jobs <= this are auto-archived (0-100 scale)
 # ─── Salary Preferences ──────────────────────────────────────────────────────
 MIN_SALARY_USD_MONTHLY = 2500   # Minimum acceptable salary
 PENALIZE_MISSING_SALARY = False # Do not penalize postings with no salary info
+
+# ─── Load User Overrides ──────────────────────────────────────────────────────
+# Automatically import generated settings from config_user.py if it exists
+try:
+    from config_user import (
+        SEARCH_QUERIES as USER_SEARCH_QUERIES,
+        SCORE_SHOW_THRESHOLD as USER_SHOW_THRESHOLD,
+        SCORE_ARCHIVE_THRESHOLD as USER_ARCHIVE_THRESHOLD,
+        MIN_SALARY_USD_MONTHLY as USER_MIN_SALARY
+    )
+    
+    # Overwrite defaults with user specs
+    SEARCH_QUERIES = USER_SEARCH_QUERIES
+    SCORE_SHOW_THRESHOLD = USER_SHOW_THRESHOLD
+    SCORE_ARCHIVE_THRESHOLD = USER_ARCHIVE_THRESHOLD
+    MIN_SALARY_USD_MONTHLY = USER_MIN_SALARY
+except ImportError:
+    pass  # No user configuration found, stick to defaults.
 
 
 # ─── Job Boards ───────────────────────────────────────────────────────────────

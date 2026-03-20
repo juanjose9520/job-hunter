@@ -20,6 +20,28 @@ An automated, AI-powered workspace to discover, score, and track remote job oppo
 
 ## 📦 Setup & Installation
 
+### ⚡ Quick Start (Recommended)
+
+The easiest way to set up the project is using the interactive Setup Wizard:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/job-hunt.git
+   cd job-hunt
+   ```
+2. **Open the project in VS Code:**
+   ```bash
+   code .
+   ```
+3. **Run the Wizard:**
+   - Go to the top menu: **Terminal** → **Run Task...**
+   - Select **`⚙️ Run Setup Wizard`**
+   - Follow the interactive prompts to build your profile and search queries!
+
+---
+
+### 🛠️ Manual Setup (For Advanced Users)
+
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/yourusername/job-hunt.git

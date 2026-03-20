@@ -16,6 +16,9 @@ data/*
 # Output directory: ignore everything
 output/**
 
+# User-generated config (created by setup wizard, contains personal preferences)
+config_user.py
+
 # OS-specific
 .DS_Store
 Thumbs.db

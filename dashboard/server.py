@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 warnings.filterwarnings("ignore")
 from flask import Flask, jsonify, request, send_from_directory
-from scripts.database import get_connection, update_job_status, delete_job
+from scripts.database import get_connection, update_job_status, delete_job, migrate_db
 from scripts.discover import run_discovery
 from scripts.score import run_scoring
 from scripts.keywords import build_skills_log
@@ -88,11 +88,22 @@ def api_update_notes(job_id):
 
 @app.route("/api/discover", methods=["POST"])
 def api_discover():
+    import json
+    from datetime import datetime, timezone
+    from config import DATA_DIR
     # Run the deep pipeline: APIs + JobSpy, then the original scrapers, then score
     run_all_apis()
     run_jobspy_scraper(SEARCH_QUERIES, results_wanted=15)
     ds_summary = run_discovery()
     sc_summary = run_scoring()
+    # Persist last discovery info
+    status_file = DATA_DIR / "last_discovery.json"
+    status_file.write_text(json.dumps({
+        "last_discovery": datetime.now(timezone.utc).isoformat(),
+        "added": ds_summary.get("added_new", 0),
+        "scored": sc_summary.get("scored", 0),
+        "archived": sc_summary.get("archived", 0)
+    }), encoding="utf-8")
     return jsonify({
         "discovery": ds_summary,
         "scoring": sc_summary
@@ -268,6 +279,38 @@ def api_export_pdf(job_id):
         traceback.print_exc(file=sys.stderr)
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/jobs/<int:job_id>/follow-up", methods=["PUT"])
+def api_update_follow_up(job_id):
+    data = request.json
+    follow_up_date = data.get("follow_up_date")  # ISO date string or empty string
+    conn = get_connection()
+    conn.execute("UPDATE jobs SET follow_up_date = ? WHERE id = ?", (follow_up_date or None, job_id))
+    conn.commit()
+    conn.close()
+    return jsonify({"success": True})
+
+
+@app.route("/api/base-resume")
+def api_base_resume():
+    from config import BASE_RESUME
+    if not BASE_RESUME.exists():
+        return jsonify({"success": False, "content": ""})
+    return jsonify({"success": True, "content": BASE_RESUME.read_text(encoding="utf-8")})
+
+
+@app.route("/api/status")
+def api_status():
+    import json
+    from config import DATA_DIR
+    status_file = DATA_DIR / "last_discovery.json"
+    if not status_file.exists():
+        return jsonify({"last_discovery": None})
+    try:
+        return jsonify(json.loads(status_file.read_text(encoding="utf-8")))
+    except Exception:
+        return jsonify({"last_discovery": None})
+
+
 @app.route("/api/skills")
 def api_skills():
     log = build_skills_log()
@@ -275,6 +318,7 @@ def api_skills():
 
 
 def run_server(port=8080):
+    migrate_db()
     print(f"\n[Dashboard] Starting on http://localhost:{port}/")
     print("  Press Ctrl+C to quit.")
     

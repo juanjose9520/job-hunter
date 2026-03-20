@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Job Hunt Workspace</title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,10 @@
 
   <header>
     <div class="header-content">
-      <h1>Job Hunt Workspace</h1>
+      <div>
+        <h1>Job Hunt Workspace</h1>
+        <div id="last-discovery-status" class="discovery-status">Loading status...</div>
+      </div>
       <div class="actions">
         <button id="btn-discover" class="btn primary">
           <span class="icon">🔍</span> Discover New Jobs
@@ -33,29 +36,77 @@
 
     <!-- PIPELINE KANBAN -->
     <div id="board-view" class="view active">
+
+      <!-- Score filter bar -->
+      <div class="board-controls">
+        <div class="score-filter">
+          <label for="score-filter-slider">Min Score: <span id="score-filter-value">50</span></label>
+          <input type="range" id="score-filter-slider" min="0" max="100" value="50" step="5">
+        </div>
+      </div>
+
       <div class="kanban">
 
+        <!-- NEW MATCHES -->
         <div class="column" id="col-new">
-          <div class="col-head">New Matches <span class="count">0</span></div>
+          <div class="col-head">
+            <div class="col-head-row">
+              <span>New Matches <span class="count">0</span></span>
+              <select class="col-sort" data-col="new">
+                <option value="score-desc">Score ↓</option>
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+                <option value="salary-desc">Salary ↓</option>
+              </select>
+            </div>
+            <input type="text" class="col-search" id="col-new-search" placeholder="Search title or company…">
+          </div>
           <div class="col-body" ondragover="allowDrop(event)" ondrop="drop(event, 'new')"></div>
         </div>
 
+        <!-- SHORTLISTED -->
         <div class="column" id="col-shortlisted">
-          <div class="col-head">Shortlisted <span class="count">0</span></div>
+          <div class="col-head">
+            <div class="col-head-row">
+              <span>Shortlisted <span class="count">0</span></span>
+              <select class="col-sort" data-col="shortlisted">
+                <option value="score-desc">Score ↓</option>
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+                <option value="salary-desc">Salary ↓</option>
+              </select>
+            </div>
+          </div>
           <div class="col-body" ondragover="allowDrop(event)" ondrop="drop(event, 'shortlisted')"></div>
         </div>
 
+        <!-- APPLIED -->
         <div class="column" id="col-applied">
-          <div class="col-head">Applied <span class="count">0</span></div>
+          <div class="col-head">
+            <div class="col-head-row">
+              <span>Applied <span class="count">0</span></span>
+              <select class="col-sort" data-col="applied">
+                <option value="date-desc">Newest first</option>
+                <option value="score-desc">Score ↓</option>
+                <option value="date-asc">Oldest first</option>
+              </select>
+            </div>
+          </div>
           <div class="col-body" ondragover="allowDrop(event)" ondrop="drop(event, 'applied')"></div>
         </div>
 
+        <!-- CLOSED / ARCHIVED -->
         <div class="column" id="col-closed">
-          <div class="col-head" style="flex-direction: column; align-items: stretch; gap: 0.5rem">
-            <div style="display:flex; justify-content: space-between">
-              <span>Closed / Archived</span> <span class="count">0</span>
+          <div class="col-head">
+            <div class="col-head-row">
+              <span>Closed / Archived <span class="count">0</span></span>
+              <select class="col-sort" data-col="closed">
+                <option value="date-desc">Newest first</option>
+                <option value="score-desc">Score ↓</option>
+                <option value="date-asc">Oldest first</option>
+              </select>
             </div>
-            <div style="display:flex; gap: 0.5rem">
+            <div class="col-head-filters">
               <select id="archive-filter-domain"
                 style="font-size:0.8rem; background:#334155; color:white; border:none; border-radius:4px; padding:2px">
                 <option value="all">All Domains</option>
@@ -89,6 +140,7 @@
           <h3>Role Signals (Keywords)</h3>
           <ul id="list-signals" class="skill-list"></ul>
         </div>
+      </div>
     </div>
 
     <!-- GRAVEYARD VIEW -->
@@ -103,19 +155,25 @@
 
   </main>
 
+  <!-- BATCH ACTION BAR -->
+  <div id="batch-bar" class="batch-bar" style="display:none;">
+    <span id="batch-count">0 selected</span>
+    <button class="btn secondary" onclick="batchArchive()">Archive Selected</button>
+    <button class="btn danger" onclick="batchDelete()">Delete Selected</button>
+    <button class="btn secondary" onclick="clearSelection()">Clear Selection</button>
+  </div>
+
   <!-- MODAL FOR JOB DETAILS -->
   <div id="job-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
       <div id="modal-body"></div>
       <div class="modal-footer">
-        <button id="btn-save-desc" class="btn secondary" style="margin-right:auto; background:#10b981">💾 Save
-          Description</button>
+        <button id="btn-save-desc" class="btn secondary" style="margin-right:auto; background:#10b981">💾 Save Description</button>
         <button id="btn-shortlist" class="btn secondary">⭐ Shortlist</button>
         <button id="btn-tailor" class="btn secondary">Tailor Resume (AI)</button>
         <button id="btn-delete-job" class="btn danger">🗑️ Delete</button>
-        <button id="btn-open-docs" class="btn secondary" style="display:none; background:var(--accent)">📄 Review
-          Docs</button>
+        <button id="btn-open-docs" class="btn secondary" style="display:none; background:var(--accent)">📄 Review Docs</button>
         <button id="btn-open-link" class="btn primary">Open Posting</button>
       </div>
     </div>
@@ -130,7 +188,8 @@
           <div>
             <button id="tab-resume" class="btn secondary active" style="margin-right:0.5rem">Resume</button>
             <button id="tab-cover" class="btn secondary" style="margin-right:0.5rem">Cover Letter</button>
-            <button id="tab-artifacts" class="btn secondary">Artifacts</button>
+            <button id="tab-artifacts" class="btn secondary" style="margin-right:0.5rem">Artifacts</button>
+            <button id="btn-diff" class="btn secondary" title="Compare current document with base resume">📊 Diff vs Base</button>
           </div>
           <div>
             <button id="btn-save-doc" class="btn secondary" style="background:#10b981">💾 Save File</button>
@@ -161,7 +220,32 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- DIFF COMPARISON MODAL -->
+  <div id="diff-modal" class="modal">
+    <div class="modal-content diff-modal-content">
+      <span class="close-btn" id="diff-close-btn">&times;</span>
+      <h3 style="padding: 1rem 2rem; border-bottom: 1px solid var(--border); flex-shrink:0;">
+        Diff: Base Resume vs Current Version
+        <span style="font-size:0.8rem; margin-left:1rem; color:var(--text-muted);">
+          <span style="color:#10b981">■</span> Added &nbsp;
+          <span style="color:#ef4444">■</span> Removed &nbsp;
+          <span style="color:var(--text-muted)">■</span> Unchanged
+        </span>
+      </h3>
+      <div class="diff-panels">
+        <div class="diff-panel">
+          <div class="diff-panel-title">Base Resume</div>
+          <div id="diff-base" class="diff-content"></div>
+        </div>
+        <div class="diff-panel">
+          <div class="diff-panel-title">Current Version</div>
+          <div id="diff-current" class="diff-content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=3"></script>
 </body>
 
 </html>

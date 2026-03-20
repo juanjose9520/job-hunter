@@ -128,6 +128,17 @@ def save_keywords(job_id: int, keywords: list[dict]):
     conn.close()
 
 
+def migrate_db():
+    """Apply schema migrations for existing databases."""
+    conn = get_connection()
+    try:
+        conn.execute("ALTER TABLE jobs ADD COLUMN follow_up_date TEXT")
+        conn.commit()
+    except Exception:
+        pass  # Column already exists
+    conn.close()
+
+
 def delete_job(job_id: int):
     """Hard delete a job and its associated keywords/applications."""
     conn = get_connection()
