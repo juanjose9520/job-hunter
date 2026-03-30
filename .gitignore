@@ -22,3 +22,6 @@ config_user.py
 # OS-specific
 .DS_Store
 Thumbs.db
+
+# IDE settings
+.vscode/

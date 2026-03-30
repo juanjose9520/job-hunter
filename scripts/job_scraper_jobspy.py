@@ -52,25 +52,62 @@ def map_jobspy_to_db(job: pd.Series) -> dict:
         "remote": is_remote
     }
 
+# Up-to-date Chrome user agent reduces 403 rejections from job boards
+_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/124.0.0.0 Safari/537.36"
+)
+
+def _scrape_with_fallback(query: str, results_wanted: int) -> pd.DataFrame:
+    """
+    Try all boards first; on 403 fall back to Indeed + Google only
+    (LinkedIn & ZipRecruiter are the most aggressive blockers).
+    """
+    common_kwargs = dict(
+        search_term=query,
+        results_wanted=results_wanted,
+        is_remote=True,
+        location="United States",
+        country_indeed="USA",
+        hours_old=72,           # cap to 3 days → fewer pages → fewer 403s
+        user_agent=_USER_AGENT,
+        verbose=0,
+    )
+    try:
+        return scrape_jobs(
+            site_name=["indeed", "linkedin", "zip_recruiter", "google"],
+            google_search_term=f"{query} remote jobs USA",
+            **common_kwargs,
+        )
+    except Exception as primary_err:
+        err_str = str(primary_err).lower()
+        if "403" in err_str or "rate" in err_str or "blocked" in err_str:
+            print(f"[JobSpy]   403/rate-limit hit — retrying with Indeed + Google only...")
+            try:
+                return scrape_jobs(
+                    site_name=["indeed", "google"],
+                    google_search_term=f"{query} remote jobs USA",
+                    **common_kwargs,
+                )
+            except Exception as fallback_err:
+                raise fallback_err
+        raise primary_err
+
+
 def run_jobspy_scraper(queries: list[str], results_wanted: int = 20):
     """
     Run JobSpy for the given queries and save to the database.
     """
     total_added = 0
-    print(f"[JobSpy] Starting search across LinkedIn, Indeed, Glassdoor, ZipRecruiter...")
+    print(f"[JobSpy] Starting search across Indeed, LinkedIn, ZipRecruiter, Google...")
     
     for query in queries:
         print(f"[JobSpy] Searching for: '{query}'")
         try:
-            jobs_df = scrape_jobs(
-                site_name=["indeed", "linkedin", "zip_recruiter"],
-                search_term=query,
-                results_wanted=results_wanted,
-                is_remote=True,
-                location="United States"
-            )
+            jobs_df = _scrape_with_fallback(query, results_wanted)
             
-            if jobs_df.empty:
+            if jobs_df is None or jobs_df.empty:
                 print(f"[JobSpy] No results found for '{query}'")
                 continue
                 
